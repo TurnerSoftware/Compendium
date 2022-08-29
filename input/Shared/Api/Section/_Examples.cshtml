@@ -1,0 +1,11 @@
+@{
+	var examples = Document.GetString(CodeAnalysisKeys.Example);
+	if (!examples.IsNullOrWhiteSpace())
+	{
+		((List<(string, string)>)ViewData[Keys.Headings]).Add(("Examples", "Examples"));
+		<section>
+			<h2 id="Examples">Examples</h2>
+			<pre><code class="language-csharp">@Html.Raw(examples)</code></pre>
+		</section>
+	}
+}

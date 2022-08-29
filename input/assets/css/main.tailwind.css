@@ -1,0 +1,36 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@tailwind variants;
+
+@layer components {
+    .retro-button {
+        padding: 1rem 1.6rem;
+        background: var(--brand-orange-4);
+        box-shadow: 0 0 0 5px var(--brand-orange-3) inset;
+        border: none;
+        border-radius: 3rem;
+        transition: all 0.1s ease;
+        cursor: pointer;
+        font-family: var(--font-heading);
+        color: var(--brand-black);
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .retro-button:hover {
+        box-shadow: 0 0 0 5px var(--brand-orange-1) inset, 0 0 0 10px var(--brand-orange-2) inset, 0 0 0 15px var(--brand-orange-3) inset;
+    }
+
+    .retro-button:active {
+        transform: translateY(0.1rem);
+    }
+
+    .retro-button:focus {
+        outline: 5px solid transparent;
+    }
+
+    .retro-button:focus:not(:hover) {
+        outline: 5px solid var(--brand-orange-1);
+    }
+}

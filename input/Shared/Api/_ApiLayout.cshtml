@@ -1,0 +1,50 @@
+@{
+    Layout = "_Layout";
+}
+
+@*@section Sidebar {
+	<div class="sidebar-root">
+		@await Html.PartialAsync("Api/Sidebar/_" + Document.GetString(CodeAnalysisKeys.Kind))
+	</div>
+}
+
+@section Breadcrumbs {
+	@{
+		List<IDocument> containingTypes = new List<IDocument>();
+		IDocument containingType = Document.GetDocument(CodeAnalysisKeys.ContainingType);
+		while (containingType != null)
+		{
+			containingTypes.Add(containingType);
+			containingType = containingType.GetDocument(CodeAnalysisKeys.ContainingType);
+		}
+		containingTypes.Reverse();
+		foreach (IDocument reverseContainingType in containingTypes)
+		{
+			<span>@Context.GetTypeLink(reverseContainingType).</span>
+		}
+	}
+}*@
+
+@*@section Title {
+    <div>@Html.Raw(Context.GetFormattedHtmlName(Document.GetTitle())) <small>@Document.GetString(CodeAnalysisKeys.SpecificKind)</small></div>
+}
+
+@section ChildPages {
+}*@
+
+@{
+	// Use the ViewData to track headings since it's too late to figure them out from HTML by the time we're rendering
+	// (anchor, title)
+	ViewData[Keys.Headings] = new List<(string, string)>();
+}
+
+<section class="prose dark:prose-invert max-w-full">
+	<h1>@Html.Raw(Context.GetFormattedHtmlName(Document.GetString(CodeAnalysisKeys.FullName))) @Document.GetString(CodeAnalysisKeys.SpecificKind)</h1>
+	@await Html.PartialAsync("Api/Kind/_" + Document.GetString(CodeAnalysisKeys.Kind))
+</section>
+
+@*@section RightSidebar {
+	@await Html.PartialAsync("Api/_RightSidebar")
+}*@
+
+@{ IgnoreBody(); }

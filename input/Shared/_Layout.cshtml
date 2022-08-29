@@ -1,0 +1,80 @@
+﻿<!DOCTYPE html>
+<html lang="en-AU" class="bg-retro-white text-retro-black dark:bg-retro-brown-dark dark:text-white">
+<head>
+    @{
+        var title = $"{Document.GetString(WebKeys.Title)} - {Document.GetString(ThemeKeys.ProjectName)}";
+    }
+    <title>@title by Turner Software</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    @{
+        var description = Document.GetString(WebKeys.Description);
+    }
+    <meta name="description" content="@description" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0" />
+
+    <link rel="canonical" href="@Context.GetLink(Document, includeHost: true)" />
+
+    <meta property="og:title" content="@title">
+    <meta property="og:image" content="@Context.GetLink("assets/images/open-graph-image.png", includeHost: true)">
+    <meta property="og:description" content="@description">
+    <meta property="og:url" content="@Context.GetLink()">
+    <meta property="og:site_name" content="@Document.GetString(ThemeKeys.ProjectName)">
+    <meta property="og:type" content="website">
+
+    <meta name="twitter:title" content="@title">
+    <meta name="twitter:description" content="@description">
+    <meta name="twitter:image" content="@Context.GetLink("assets/images/twitter-card-image.png", includeHost: true)">
+    <meta name="twitter:site" content="@@TurnerSoftware">
+    <meta name="twitter:creator" content="@@TurnerSoftware">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=YAXQXP3L48">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png?v=YAXQXP3L48">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png?v=YAXQXP3L48">
+    <link rel="manifest" href="/site.webmanifest?v=YAXQXP3L48">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg?v=YAXQXP3L48" color="#231f20">
+    <link rel="shortcut icon" href="/favicon.ico?v=YAXQXP3L48">
+    <meta name="msapplication-TileColor" content="#231f20">
+    <meta name="theme-color" content="#ffffff">
+
+    <link href="https://fonts.googleapis.com/css?family=Montserrat|Raleway&display=swap" rel="stylesheet" />
+    <link href="/assets/css/main.tailwind.min.css" rel="stylesheet" asp-append-version="true" />
+</head>
+<body class="font-copy">
+    <div class="grid grid-cols-main max-w-7xl min-h-screen mx-auto">
+        <aside class="bg-retro-brown text-white text-right p-4 md:p-8 border-r-4 border-primary-accent relative">
+            <div class="absolute top-0 right-full w-screen h-full bg-retro-brown"></div>
+            <header class="mb-8">
+                <div class="mb-2">
+                    <a class="text-3xl font-heading" href="/">
+                        <span class="block">
+                            <img class="inline-block mt-logo-offset-y mr-logo-offset-x" src="/assets/images/logo.svg" />
+                        </span>
+                        @Document.GetString(ThemeKeys.ProjectName)
+                    </a>
+                </div>
+                <span class="inline-block w-[80%] text-lg leading-6 text-white/70 italic">
+                    @Document.GetString(ThemeKeys.ProjectShortDescription)
+                </span>
+            </header>
+            <nav class="mb-16">
+                <ul>
+                    @*<li class="mb-2">
+                        <a class="text-white/80 hover:text-white" href="guides">Guides</a>
+                    </li>*@
+                    <li class="mb-2">
+                        <a class="text-white/80 hover:text-white" href="/api">API Docs</a>
+                    </li>
+                </ul>
+            </nav>
+            <footer class="prose prose-sm prose-invert opacity-75">
+                &copy; <a href="https://turnersoftware.com.au">Turner&nbsp;Software</a> @DateTime.UtcNow.Year
+            </footer>
+        </aside>
+        <main class="p-4 md:p-8 min-h-[8rem]">
+            @RenderBody()
+        </main>
+    </div>
+</body>
+</html>

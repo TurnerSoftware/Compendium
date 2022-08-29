@@ -1,0 +1,22 @@
+@inherits StatiqRazorPage<DocumentTable>
+
+@{
+    if(Model?.Documents?.Count > 0)
+    {
+        ((List<(string, string)>)ViewData[Keys.Headings]).Add((Model.Title.Replace(" ", ""), Model.Title));
+        <section>
+            <h2 id="@(Model.Title.Replace(" ", ""))">@Model.Title</h2>
+            <table>
+                <tbody>
+                    @foreach(IDocument doc in Model.Documents)
+                    {
+                        <tr>
+                            <td>@Context.GetTypeLink(doc, Model.LinkTypeArguments)</td>
+                            <td>@Html.Raw(doc.GetString(CodeAnalysisKeys.Summary))</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </section>
+    }
+}

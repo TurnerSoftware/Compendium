@@ -1,0 +1,34 @@
+@{
+    var pluralLookup = new Dictionary<string, string>()
+    {
+        ["Class"] = "Classes",
+        ["Struct"] = "Structs",
+        ["Enum"] = "Enums"
+    };
+
+    foreach (IGrouping<string, IDocument> typeGroup
+        in Document.GetDocuments(CodeAnalysisKeys.MemberTypes)
+            .Where(x => x.GetBool(CodeAnalysisKeys.IsResult) && x.GetString(CodeAnalysisKeys.Kind) == "NamedType")
+            .GroupBy(x => x.GetString(CodeAnalysisKeys.SpecificKind)))
+    {
+        @await Html.PartialAsync("Api/Section/_DocumentTable", new DocumentTable
+        {
+            Documents = typeGroup.OrderBy(x => x.GetString(CodeAnalysisKeys.DisplayName)).ToList(),
+            Title = pluralLookup.TryGetValue(typeGroup.Key, out var title) ? title : typeGroup.Key,
+            Header = typeGroup.Key,
+            HasSummary = true
+        });
+    }
+
+    @await Html.PartialAsync("Api/Section/_DocumentTable", new DocumentTable
+    {
+        Documents = Document.GetDocuments(CodeAnalysisKeys.MemberNamespaces)
+            ?.Where(x => x.GetBool(CodeAnalysisKeys.IsResult))
+            .OrderBy(x => x.GetString(CodeAnalysisKeys.DisplayName))
+            .ToList(),
+        Title = "Namespaces",
+        Header = "Namespace",
+        HasSummary = true,
+        LinkTypeArguments = false
+    });
+}

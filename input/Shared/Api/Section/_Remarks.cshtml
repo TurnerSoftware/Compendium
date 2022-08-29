@@ -1,0 +1,11 @@
+@{
+	string remarks = Document.GetString(CodeAnalysisKeys.Remarks);
+	if (!remarks.IsNullOrWhiteSpace())
+	{
+		((List<(string, string)>)ViewData[Keys.Headings]).Add(("Remarks", "Remarks"));
+		<section>
+			<h2 id="Remarks">Remarks</h2>
+			<div>@Html.Raw(remarks)</div>
+		</section>
+	}
+}

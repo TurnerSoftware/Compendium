@@ -1,0 +1,11 @@
+@{
+	string syntax = Document.GetString(CodeAnalysisKeys.Syntax);
+	if (!syntax.IsNullOrWhiteSpace())
+	{
+		((List<(string, string)>)ViewData[Keys.Headings]).Add(("Syntax", "Syntax"));
+		<section>
+			<h2 id="Syntax">Syntax</h2>
+			<pre><code class="language-csharp">@syntax</code></pre>
+		</section>
+	}
+}

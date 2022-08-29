@@ -1,0 +1,82 @@
+﻿@{
+    var containingNamespace = Document.GetDocument(CodeAnalysisKeys.ContainingNamespace);
+    var containingAssembly = Document.GetDocument(CodeAnalysisKeys.ContainingAssembly);
+
+    var summary = Document.GetString(CodeAnalysisKeys.Summary);
+    var syntax = Document.GetString(CodeAnalysisKeys.Syntax);
+
+    var baseTypes = Document.GetDocumentList(CodeAnalysisKeys.BaseTypes);
+    var derivedTypes = Document.GetDocumentList(CodeAnalysisKeys.DerivedTypes);
+	var implements = Document.GetDocumentList(CodeAnalysisKeys.Implements);
+    
+	((List<(string, string)>)ViewData[Keys.Headings]).Add(("Definition", "Definition"));
+    <section>
+        <h2 id="Definition">Definition</h2>
+        <div class="text-sm opacity-80 mb-3">
+            <dl>
+                <dt class="inline-block">Namespace:</dt>
+                <dd class="inline-block ml-2">@Context.GetTypeLink(containingNamespace)</dd>
+            </dl>
+            <dl>
+                <dt class="inline-block">Assembly:</dt>
+                <dd class="inline-block ml-2">@Context.GetTypeLink(containingAssembly)</dd>
+            </dl>
+        </div>
+
+        @if (!summary.IsNullOrWhiteSpace())
+        {
+            <div class="mb-3">@Html.Raw(summary)</div>
+        }
+
+	    @if (!syntax.IsNullOrWhiteSpace())
+	    {
+	        <pre><code class="language-csharp">@syntax</code></pre>
+	    }
+        
+	    @if (baseTypes?.Count > 0)
+	    {
+            <dl>
+    		    <dt class="inline-block">Inheritance</dt>
+    		    <dd class="inline-block ml-2">
+                    @foreach (var baseType in baseTypes.Reverse())
+                    {
+                        @Context.GetTypeLink(baseType)
+                        <span class="relative top-[-2px] mx-0.5">→</span>
+                    }
+                    @Document.GetString(CodeAnalysisKeys.Name)
+    		    </dd>
+            </dl>
+	    }
+
+	    @if (derivedTypes?.Count > 0)
+	    {
+            <dl>
+    		    <dt class="inline-block">Derived</dt>
+    		    <dd class="inline-block ml-2">
+    			    <ul class="list-unstyled">
+    				    @foreach (IDocument derivedType in derivedTypes)
+    				    {
+    					    <li>@Context.GetTypeLink(derivedType)</li>
+    				    }
+    			    </ul>
+    		    </dd>
+            </dl>
+	    }
+
+	    @if (implements?.Count > 0)
+	    {
+            <dl>
+    		    <dt class="inline-block">Implements</dt>
+    		    <dd class="inline-block ml-2">
+    			    <ul class="list-unstyled">
+    				    @foreach (IDocument implementsDocument in implements)
+				        {
+					        var implementsContainingTypeDocument = implementsDocument.GetDocument(CodeAnalysisKeys.ContainingType);
+    					    <li>@Context.GetTypeLink(implementsContainingTypeDocument).@Context.GetTypeLink(implementsDocument)</li>
+    				    }
+    			    </ul>
+    		    </dd>
+            </dl>
+	    }
+    </section>
+}

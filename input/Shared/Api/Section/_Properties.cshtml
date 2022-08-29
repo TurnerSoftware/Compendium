@@ -1,0 +1,33 @@
+@{
+    var properties = Document.GetDocumentList(CodeAnalysisKeys.Members)
+        ?.Where(x => x.GetBool(CodeAnalysisKeys.IsResult) && x.GetString(CodeAnalysisKeys.Kind) == "Property")
+        .OrderBy(x => x.GetString(CodeAnalysisKeys.DisplayName))
+        .ToList();
+    if (properties?.Count > 0)
+    {
+        ((List<(string, string)>)ViewData[Keys.Headings]).Add(("Properties", "Properties"));
+        <section>
+            <h2 id="Properties">Properties</h2>
+            <table class="table table-api table-striped table-hover">
+                <tbody>
+                    @foreach(IDocument property in properties)
+                    {
+                        <tr>
+                            <td>@Context.GetTypeLink(property, false)</td>
+                            <td>
+                                <div>@Html.Raw(property.GetString(CodeAnalysisKeys.Summary))</div>
+                                @{
+                                    var containingType = property.GetDocument(CodeAnalysisKeys.ContainingType);
+                                    if (!Document.IdEquals(containingType))
+                                    {
+                                        <div>(Inherited from @Context.GetTypeLink(containingType))</div>
+                                    }
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </section>
+    }
+}

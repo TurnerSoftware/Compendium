@@ -1,0 +1,33 @@
+@{
+	var methods = Document.GetDocumentList(CodeAnalysisKeys.Members)
+		?.Where(x => x.GetBool(CodeAnalysisKeys.IsResult) && x.GetString(CodeAnalysisKeys.Kind) == "Method")
+		.OrderBy(x => x.GetString(CodeAnalysisKeys.DisplayName))
+		.ToList();
+	if (methods?.Count > 0)
+	{
+		((List<(string, string)>)ViewData[Keys.Headings]).Add(("Methods", "Methods"));
+		<section>
+			<h2 id="Methods">Methods</h2>
+			<table>
+				<tbody>
+					@foreach(IDocument method in methods)
+					{
+						<tr>
+							<td>@Context.GetTypeLink(method, false)</td>
+							<td>
+								<div>@Html.Raw(method.GetString(CodeAnalysisKeys.Summary))</div>
+								@{
+									var containingType = method.GetDocument(CodeAnalysisKeys.ContainingType);
+									if (!Document.IdEquals(containingType))
+									{
+										<div>(Inherited from @Context.GetTypeLink(containingType))</div>
+									}
+								}
+							</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		</section>
+	}
+}

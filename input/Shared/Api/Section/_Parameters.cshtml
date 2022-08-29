@@ -1,0 +1,23 @@
+@{
+	var parameters = Document.GetDocumentList(CodeAnalysisKeys.Parameters);
+	var paramComments = Document.GetList<ReferenceComment>(CodeAnalysisKeys.Params);
+	if (parameters?.Count > 0)
+	{
+		((List<(string, string)>)ViewData[Keys.Headings]).Add(("Parameters", "Parameters"));
+		<section>
+			<h2 id="Parameters">Parameters</h2>
+			@foreach (var parameter in parameters)
+			{
+				<div>
+					<dl>
+						<dt class="inline-block"><code>@parameter.GetString(CodeAnalysisKeys.Name)</code></dt>
+						<dd class="inline-block">@Context.GetTypeLink(parameter.GetDocument(CodeAnalysisKeys.Type))</dd>
+					</dl>
+					<div>
+						@Html.Raw(paramComments?.Where(x => x.Name.Equals(parameter.GetString(CodeAnalysisKeys.Name))).Select(x => x.Html).FirstOrDefault())
+					</div>
+				</div>
+			}
+		</section>
+	}
+}
