@@ -25,26 +25,50 @@
 	}
 }*@
 
-@*@section Title {
-    <div>@Html.Raw(Context.GetFormattedHtmlName(Document.GetTitle())) <small>@Document.GetString(CodeAnalysisKeys.SpecificKind)</small></div>
-}
-
-@section ChildPages {
-}*@
-
 @{
 	// Use the ViewData to track headings since it's too late to figure them out from HTML by the time we're rendering
 	// (anchor, title)
-	ViewData[Keys.Headings] = new List<(string, string)>();
+	var headings = new List<(string Id, string Name)>();
+	ViewData[Keys.Headings] = headings;
 }
 
 <section class="prose dark:prose-invert max-w-full">
-	<h1>@Html.Raw(Context.GetFormattedHtmlName(Document.GetString(CodeAnalysisKeys.FullName))) @Document.GetString(CodeAnalysisKeys.SpecificKind)</h1>
-	@await Html.PartialAsync("Api/Kind/_" + Document.GetString(CodeAnalysisKeys.Kind))
-</section>
+	@{
+		var parentDocument = Document.GetDocument(CodeAnalysisKeys.ContainingType) ?? Document.GetDocument(CodeAnalysisKeys.ContainingNamespace);
+		if (parentDocument != null && parentDocument.GetString(Keys.Title) != "global")
+		{
+			@Context.GetTypeLink(parentDocument);
+		}
+	}
+	<h1 class="mt-1 mb-2">@Html.Raw(Context.GetFormattedHtmlName(ApiDocsHelper.GetDisplayName(Document)))</h1>
+	@{
+		var apiKind = Document.GetString(CodeAnalysisKeys.Kind);
+		if (apiKind != "Namespace")
+		{
+			var packageName = ApiDocsHelper.GetPackageName(Document);
+			<span class="text-sm opacity-80">in <a rel="noopener" href="https://www.nuget.org/packages/@packageName">@packageName</a></span>
+		}
+	}
 
-@*@section RightSidebar {
-	@await Html.PartialAsync("Api/_RightSidebar")
-}*@
+	<div class="grid grid-cols-aside">
+		<div>
+			@await Html.PartialAsync("Api/Kind/_" + Document.GetString(CodeAnalysisKeys.Kind))
+		</div>
+		@if (headings.Count > 0)
+		{
+			<aside>
+				<div class="p-8">
+					<span>On this page</span>
+					<ul class="list-none p-0 m-0">	
+					@foreach (var heading in headings)
+					{
+						<li class="p-0"><a href="#@heading.Id">@heading.Name</a></li>
+					}
+					</ul>
+				</div>
+			</aside>
+		}
+	</div>
+</section>
 
 @{ IgnoreBody(); }

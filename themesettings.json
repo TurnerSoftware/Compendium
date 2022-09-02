@@ -1,0 +1,6 @@
+﻿{
+	//"ApiLayout": "Api/_ApiLayout",
+	//"SourceFiles": "",
+	//"ProjectFiles": "*.csproj",
+	//"OutputApiDocuments": false //this doesn't work here
+}

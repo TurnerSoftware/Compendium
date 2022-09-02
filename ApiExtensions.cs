@@ -1,5 +1,6 @@
 ﻿using Statiq.CodeAnalysis;
 using Statiq.Docs.Pipelines;
+using Statiq.Web.Modules;
 using System.Text;
 
 namespace TurnerSoftware.Compendium;
@@ -16,19 +17,11 @@ public class ApiExtensions : Pipeline
 			new ConcatDocuments(nameof(Api)),
 			new ExecuteConfig(Config.FromDocument((doc, ctx) =>
 			{
-				var coreName = $"{doc.GetString(CodeAnalysisKeys.FullName)} {doc.GetString(CodeAnalysisKeys.SpecificKind)}";
-				var title = coreName;
-				
-				var containingNamespace = doc.GetDocument(CodeAnalysisKeys.ContainingNamespace);
-				if (containingNamespace is not null)
+				return doc.Clone(new MetadataItems
 				{
-					title = $"{coreName} ({containingNamespace.GetString(Keys.Title)})";
-				}
-
-				return doc.Clone(new Dictionary<string, object>()
-				{
-					[Keys.Title] = title
-				});
+					{ Keys.Title, ApiDocsHelper.GetPageTitle(doc) },
+					//{ WebKeys.ContentType, ContentType.Content }
+				});//, doc.ContentProvider.CloneWithMediaType(MediaTypes.Html));
 			}))
 		);
 	}

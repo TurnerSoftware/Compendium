@@ -82,6 +82,7 @@ module.exports = {
             }),
             gridTemplateColumns: {
                 'main': '360px minmax(0, 1fr)',
+                'aside': 'minmax(0, 1fr) 200px'
             }
         }
     },
